@@ -4,6 +4,7 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -71,7 +72,7 @@ public class Query {
 
 
         System.out.println("Please select the type of Analyzer for Query Parser:\n 1. Standard for StandardAnalyzer()\n" +
-                " 2. Simple for SimpleAnalyzer()\n 3. Whitespace for WhitespaceAnalyzer()\n"
+                " 2. Simple for SimpleAnalyzer()\n 3. English for EnglishAnalyzer()\n 4. Whitespace for WhitespaceAnalyzer()\n"
         );
         Scanner myObj = new Scanner(System.in);
         String analyzerChoice = myObj.nextLine();
@@ -83,6 +84,11 @@ public class Query {
                 System.out.println("Selected Analyzer for Query Parser is: StandardAnalyzer()");
                 break;
             }
+            case "English": {
+                analyzer = new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet());
+                System.out.println("Selected Analyzer for Query Parser is: EnglishAnalyzer()");
+                break;
+            }
             case "Simple":
                 analyzer = new SimpleAnalyzer();
                 System.out.println("Selected Analyzer for Query Parser is: SimpleAnalyzer()");
@@ -92,8 +98,8 @@ public class Query {
                 System.out.println("Selected Analyzer for Query Parser is: WhitespaceAnalyzer()");
                 break;
             default: {
-                System.out.println("Selected Default Analyzer for Query Parser : StandardAnalyzer()");
-                analyzer = new StandardAnalyzer();
+                System.out.println("Selected Default Analyzer for Query Parser : EnglishAnalyzer()");
+                analyzer = new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet());
             }
         }
 
