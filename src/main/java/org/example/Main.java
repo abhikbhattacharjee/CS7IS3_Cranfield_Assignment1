@@ -30,7 +30,7 @@ public class Main {
         );
         Scanner myObj = new Scanner(System.in);
         String analyzerChoice = myObj.nextLine();
-        System.out.println("Selected Analyzer for Index Writer is: " + analyzerChoice +"Analyzer()");
+
         String INDEX_DIRECTORY = "./index";
 
         Analyzer analyzer = null;
@@ -38,15 +38,19 @@ public class Main {
         switch (analyzerChoice) {
             case "Standard":
                 analyzer = new StandardAnalyzer();
+                System.out.println("Selected Analyzer for Index Writer is: StandardAnalyzer()");
                 break;
             case "Simple":
                 analyzer = new SimpleAnalyzer();
+                System.out.println("Selected Analyzer for Index Writer is: SimpleAnalyzer()");
                 break;
             case "Whitespace":
                 analyzer = new WhitespaceAnalyzer();
+                System.out.println("Selected Analyzer for Index Writer is: WhitespaceAnalyzer()");
                 break;
             default:
                 analyzer = new StandardAnalyzer();
+                System.out.println("Selected Default Analyzer for Index Writer: StandardAnalyzer()");
         }
 
         Directory directory = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
@@ -55,7 +59,6 @@ public class Main {
         IndexWriter iwriter = new IndexWriter(directory, config);
 
         String filePath = "../cran.all.1400";
-//        String text = Files.readString(Paths.get(filePath));
         String text = Utils.readFullFile(filePath);
         int index = -1;
         int count = 0;
@@ -70,7 +73,6 @@ public class Main {
             if (index != -1) {
                 indexData.add(index);
             }
-            //System.out.println("Index: " + index);
             count++;
         }
         while (index != -1);
@@ -78,27 +80,21 @@ public class Main {
             indexData.add(text.length());
         }
 
-        //System.out.println("Count: " + indexData.size());
-
         Document document = null;
         for (int i = 1; i < indexData.size(); i++) {
             String midText = text.substring(indexData.get(i - 1), indexData.get(i));
-            //System.out.println(midText.substring(midText.indexOf(".A") + ".T\n".length(), midText.indexOf(".B")));
-            String index_doc = midText.substring(midText.indexOf(".I") + ".I\n".length(), midText.indexOf(".T"));
-            String title_doc = midText.substring(midText.indexOf(".T") + ".T\n".length(), midText.indexOf(".A"));
-            String author_doc = midText.substring(midText.indexOf(".A") + ".A\n".length(), midText.indexOf(".B"));
-            String biblio_doc = midText.substring(midText.indexOf(".B") + ".B\n".length(), midText.indexOf(".W"));
-            String word_doc = midText.substring(midText.indexOf(".W") + ".W\n".length(), midText.length());
-            //System.out.println(i);
-            //System.out.println(word_doc);
+            String index_doc = midText.substring(midText.indexOf(".I") + ".I\n".length(), midText.indexOf(".T")).trim();
+            String title_doc = midText.substring(midText.indexOf(".T") + ".T\n".length(), midText.indexOf(".A")).trim();
+            String author_doc = midText.substring(midText.indexOf(".A") + ".A\n".length(), midText.indexOf(".B")).trim();
+            String biblio_doc = midText.substring(midText.indexOf(".B") + ".B\n".length(), midText.indexOf(".W")).trim();
+            String word_doc = midText.substring(midText.indexOf(".W") + ".W\n".length(), midText.length()).trim();
 
             document = new Document();
             document.add(new StringField("docid", index_doc, Field.Store.YES));
             document.add(new TextField("title", title_doc, Field.Store.YES));
             document.add(new TextField("author", author_doc, Field.Store.YES));
-            document.add(new TextField("bibliograph", biblio_doc, Field.Store.YES));
+            document.add(new TextField("biblio", biblio_doc, Field.Store.YES));
             document.add(new TextField("words", word_doc, Field.Store.YES));
-            //return document
             iwriter.addDocument(document);
 
         }
