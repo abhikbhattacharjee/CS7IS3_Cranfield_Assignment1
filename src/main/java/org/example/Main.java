@@ -11,6 +11,7 @@ import java.util.Scanner;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -26,7 +27,8 @@ import org.apache.lucene.store.FSDirectory;
 public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        System.out.println("Please select the type of Analyzer for Index Writer:\n 1. Standard for StandardAnalyzer()\n 2. Simple for SimpleAnalyzer()\n 3. Whitespace for WhitespaceAnalyzer()\n"
+        System.out.println("Please select the type of Analyzer for Index Writer:\n 1. Standard for StandardAnalyzer()\n " +
+                "2. Simple for SimpleAnalyzer()\n 3. English for EnglishAnalyzer()\n 4. Whitespace for WhitespaceAnalyzer()\n"
         );
         Scanner myObj = new Scanner(System.in);
         String analyzerChoice = myObj.nextLine();
@@ -40,6 +42,11 @@ public class Main {
                 analyzer = new StandardAnalyzer();
                 System.out.println("Selected Analyzer for Index Writer is: StandardAnalyzer()");
                 break;
+            case "English": {
+                analyzer = new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet());
+                System.out.println("Selected Analyzer for Index Writer is: EnglishAnalyzer()");
+                break;
+            }
             case "Simple":
                 analyzer = new SimpleAnalyzer();
                 System.out.println("Selected Analyzer for Index Writer is: SimpleAnalyzer()");
@@ -49,8 +56,8 @@ public class Main {
                 System.out.println("Selected Analyzer for Index Writer is: WhitespaceAnalyzer()");
                 break;
             default:
-                analyzer = new StandardAnalyzer();
-                System.out.println("Selected Default Analyzer for Index Writer: StandardAnalyzer()");
+                analyzer = new EnglishAnalyzer(EnglishAnalyzer.getDefaultStopSet());
+                System.out.println("Selected Default Analyzer for Index Writer: EnglishAnalyzer()");
         }
 
         Directory directory = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
