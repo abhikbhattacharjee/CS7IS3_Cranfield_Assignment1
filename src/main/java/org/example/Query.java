@@ -16,9 +16,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
-import org.apache.lucene.search.similarities.BM25Similarity;
-import org.apache.lucene.search.similarities.BooleanSimilarity;
-import org.apache.lucene.search.similarities.MultiSimilarity;
+import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.QueryBuilder;
@@ -37,7 +35,7 @@ import java.util.Scanner;
 public class Query {
     private static String INDEX_PATH = "index/";
     private static String OUTPUT_FILE = "output/results.txt";
-    private static int NUM_RESULTS = 200;
+    private static int NUM_RESULTS = 50;
 
     public static void searcher(String[] args) throws Exception {
         String filePath = "../cran.qry";
@@ -51,7 +49,8 @@ public class Query {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
 
         System.out.println("Please select the type of Similarity:\n 1. BM25 for BM25Similarity()\n " +
-                "2. Boolean for BooleanSimilarity()\n"
+                "2. Boolean for BooleanSimilarity()\n 3. Classic for ClassicSimilarity()\n " +
+                "4. LMD for LMDirichletSimilarity()\n 5. LMJ for LMJelinekMercerSimilarity()"
         );
         Scanner myObj1 = new Scanner(System.in);
         String similarityChoice = myObj1.nextLine();
@@ -64,6 +63,18 @@ public class Query {
             case "Boolean":
                 indexSearcher.setSimilarity(new BooleanSimilarity());
                 System.out.println("Selected Similarity is: BooleanSimilarity()");
+                break;
+            case "Classic":
+                indexSearcher.setSimilarity(new ClassicSimilarity());
+                System.out.println("Selected Similarity is: ClassicSimilarity()");
+                break;
+            case "LMD":
+                indexSearcher.setSimilarity(new LMDirichletSimilarity());
+                System.out.println("Selected Similarity is: LMDirichletSimilarity()");
+                break;
+            case "LMJ":
+                indexSearcher.setSimilarity(new LMJelinekMercerSimilarity((float) 0.7));
+                System.out.println("Selected Similarity is: LMJelinekMercerSimilarity()");
                 break;
             default:
                 indexSearcher.setSimilarity(new BM25Similarity());
